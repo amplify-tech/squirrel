@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Follower </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="refresh" content="8" />
+  
+  <link href="{% static 'icon.jpg' %}" rel="icon">
+  <link href="{% static 'icon.jpg' %}" rel="apple-touch-icon">
+
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script> 
+   <style>
+  body{ 
+    font-size: 22px;
+  }
+  form{
+    display: inline;
+    }
+
+  input{
+    display: none;
+  }
+  .btn{
+  margin: 5px;
+  }
+  .badge{
+    background-color: #ff6666;
+  }
+ .btn .badge{
+  color: black;
+    background-color: yellow;
+    vertical-align: top;
+ }
+
+ .view_col{
+  width: 60px;
+ }
+ .del_col{
+  width: 60px;
+ }
+ .chat_col{
+  width: 240px;
+ }
+ .not_col{
+  padding-left: 4px;
+  width: 25px;
+  padding-right: 4px;
+  vertical-align: middle;
+ }
+ .act_col{
+  padding: 0;
+  width: 30px;
+  vertical-align: middle;
+ }
+ button{
+  height: 40px;
+ }
+ .view_icon{
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+ }
+ .del_icon{
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  text-align: center;
+ }
+  .active_dot{  
+    width: 18px; 
+    height: 18px;
+    background-color: #00cc00; 
+    border-radius: 50%;"
+  }
+  .listing{
+    max-height: 500px;
+    overflow: auto;
+  }
+  .header{
+    background-color: #404040;
+    text-align: center;
+  }
+  .headicon{
+    font-size: 20px;
+  }
+  .header a{
+    font-size: 18px;
+  }
+  tr{
+    max-width: 100%;
+  }
+
+@media (max-width:550px) {
+  .topic {
+      font-size: 0px !important;
+  }
+  .btn .logout{
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+}  
+</style>
+</head>
+<body onload="changeurl()">
+<div class="container-fluid">
+  <div class="row">
+<div class="col-sm-12 header">
+  <a class="btn btn-info topic" role="button" id="profile" href=""> <i class='fas fa-user-edit headicon'></i> Profile</a>
+  <a class="btn btn-info topic" role="button" id="chat" href=""> <i class="fa fa-comments headicon"> </i> Chat</a>
+  <a class="btn btn-success topic" role="button active" onClick="window.location.reload();return false;"> <i class="fa fa-users headicon"></i> Follower <span class="badge"> {{all_notify}}</span> </a>
+  <a class="btn btn-info topic" role="button" id="findfrnd" href=""> <i class='fas fa-globe-americas headicon'></i> Explore </a>
+  <a class="btn btn-danger" role="button" href="/logout"> <span class="glyphicon glyphicon-log-out"></span>  <span class="topic"> Log out </span> </a>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-2"></div>
+<div class="col-sm-4 well listing">
+  <!-- following -->
+
+  <h2> {{ allfollowing|length }} Following</h2>
+  <table> 
+  {% for i,j in allfollowing %}
+  <tr> 
+    <td class="view_col">
+    <form action="/user/{{user.id}}/viewprofile/{{i.following.id}}" method="POST" >
+        {% csrf_token %}
+
+      <button class="view_icon" type="submit"><i class='fas fa-user-circle'></i></button>
+    </form>
+  </td>
+  <td class="del_col">
+    <form action="/user/{{user.id}}/delete_flwing/" method="POST" >
+        {% csrf_token %}
+        <input type="number" name="flwing_del_id" value="{{i.following.id}}" > 
+     <button type="submit" class="btn btn-default btn-sm del_icon"> <span class="glyphicon glyphicon-trash"></span> </button>
+
+     </form>
+</td>
+
+<td class="chat_col">
+    <form action="/user/{{user.id}}/startchat/" method="POST" >
+        {% csrf_token %}
+      <p> 
+        <input type="number" name="userid" value="{{i.following.id}}" > 
+       <button  style="width: 100%; padding: 2px;" type="submit">{{i.following.first_name }}</button>
+     </p>
+   </form>
+ </td>
+ <td class="not_col"> 
+       {% ifequal  i.notification 0  %}
+       {%else%}
+         <p> <span class="badge">{{i.notification }}</span> </p>
+        {% endifequal %}
+</td>
+<td class="act_col">
+
+       {% if  j.isactive   %}   
+          <div class="active_dot"></div>
+       {%else%}
+      {% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+
+<div class="col-sm-4 well listing">
+<!-- follower  -->
+
+  <h2> {{ allfolower|length }} Followers</h2>
+  <table>
+  {% for i,j in allfolower %}
+  <tr> 
+    <td class="view_col">
+    <form action="/user/{{user.id}}/viewprofile/{{i.follower.id}}" method="POST" >
+        {% csrf_token %}
+   
+      <button class="view_icon" type="submit"><i class='fas fa-user-circle'></i></button>
+    </form>
+  </td>
+  <td class="del_col">
+    <form action="/user/{{user.id}}/delete_flwer/" method="POST" >
+        {% csrf_token %}
+        <input type="number" name="flwer_del_id" value="{{i.follower.id}}" > 
+     <button type="submit" class="btn btn-default btn-sm del_icon"> <span class="glyphicon glyphicon-trash"></span> </button>
+
+     </form>
+</td>
+<td class="chat_col">
+    <form action="/user/{{user.id}}/startchat/" method="POST" >
+        {% csrf_token %}
+      <p> 
+        <input type="number" name="userid" value="{{i.follower.id}}"  >
+       <button  style="width: 100%; padding: 2px;" type="submit">{{i.follower.first_name }}</button>
+     </p>
+   </form>
+</td>
+<td class="not_col">
+       {% ifequal i.notification  0  %}
+       {%else%}
+        <p><span class="badge">{{i.notification }}</span></p>
+      {% endifequal %}
+</td>
+<td class="act_col">
+
+       {% if  j.isactive   %}   
+          <div class="active_dot"></div>
+       {%else%}
+      {% endif %}
+
+</td>
+  </tr>
+{% endfor %}
+</table>
+
+</div>
+<div class="col-sm-2"></div>
+</div>
+
+</div>
+<script>
+  function changeurl() {
+  var mylink = window.location.href;
+  document.getElementById("profile").href=mylink.replace("/myfrnd", "");
+  document.getElementById("chat").href=mylink.replace("/myfrnd" ,"/chat/0");
+  document.getElementById("findfrnd").href=mylink.replace("/myfrnd" ,"/findfrnd");
+}
+</script>
+
+</body>
+</html>
