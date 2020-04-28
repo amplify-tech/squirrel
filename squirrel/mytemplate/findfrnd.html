@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Explore </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="refresh" content="8" />
+  
+  <link href="{% static 'icon.jpg' %}" rel="icon">
+  <link href="{% static 'icon.jpg' %}" rel="apple-touch-icon">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script> 
+  <style> 
+  body{ 
+    font-size: 22px;
+  }
+  form{
+    display: inline;
+    }
+ button{
+  height: 40px;
+ }
+
+  .btn{
+  margin: 5px;
+  }
+  .badge{
+    background-color: #ff6666;
+  }
+ .btn .badge{
+  color: black;
+    background-color: yellow;
+    vertical-align: top;
+ }
+  .header{
+    background-color: #404040;
+    text-align: center;
+  }
+  .headicon{
+    font-size: 20px;
+  }
+  .header a{
+    font-size: 18px;
+  }
+
+@media (max-width:600px) {
+  .topic {
+      font-size: 0px !important;
+  }
+  .btn .logout{
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+} 
+.view_col{
+  width: 50px;
+} 
+.name_col{
+  width: 250px;
+}
+.fol_col{
+  width: 80px;
+}
+ .view_icon{
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+ }
+
+  </style>
+</head>
+<body onload="changeurl()">
+<div class="container-fluid">
+  <div class="row">
+<div class="col-sm-12 header">
+  <a class="btn btn-info topic" role="button"  id="profile" href="" > <i class='fas fa-user-edit headicon'></i> Profile</a>
+  <a class="btn btn-info topic" role="button" id="chat" > <i class="fa fa-comments headicon"> </i> Chat</a>
+  <a class="btn btn-info topic" role="button active" id="frnd"> <i class="fa fa-users headicon"></i> Network <span class="badge"> {{all_notify}}</span> </a>
+  <a class="btn btn-success topic" role="button" id="findfrnd" onClick="window.location.reload();return false;"> <i class='fas fa-globe-americas headicon'></i> Explore </a>
+  <a class="btn btn-danger" role="button" href="/logout"> <span class="glyphicon glyphicon-log-out"></span>  <span class="topic"> Log out </span> </a>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4 well" style="max-height: 450px; overflow: auto;">
+
+    <table> 
+  {% for i in alluser %}  
+  <tr> 
+    <td  class="view_col"> 
+    <form action="/user/{{user.id}}/viewprofile/{{i.id}}" method="POST" style="display: inline;">
+        {% csrf_token %}
+   
+      <button style='font-size:30px; padding: 0;'><i class='fas fa-user-circle view_icon'></i></button>
+    </form>
+  </td >
+  <td class="name_col">
+    <p>  {{i.first_name }} </p>
+  </td>
+  <td  class="fol_col"> 
+    <form action="/user/{{user.id}}/following/" method="POST" style="display: inline;">
+        {% csrf_token %}
+     
+        <input type="number" name="userid" value="{{i.id}}" style="display: none;">
+       <button  type="submit" >Follow</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+  <div class="col-sm-4"></div>
+
+</div>
+
+<script>
+  function changeurl() {
+  var mylink = window.location.href;
+  document.getElementById("profile").href=mylink.replace("/findfrnd", "");
+  document.getElementById("chat").href=mylink.replace("/findfrnd" ,"/chat/0");
+  document.getElementById("frnd").href=mylink.replace("/findfrnd" ,"/myfrnd");
+  // document.getElementById("findfrnd").href=mylink;
+}
+</script>
+
+</body>
+</html>

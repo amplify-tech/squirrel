@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Profile </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="{% static 'icon.jpg' %}" rel="icon">
+  <link href="{% static 'icon.jpg' %}" rel="apple-touch-icon">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script> 
+  <style>
+  body{ 
+    font-size: 22px;
+  }
+  form{
+    display: inline;
+    }
+
+  .btn{
+  margin: 5px;
+  }
+  .badge{
+    background-color: #ff6666;
+  }
+ .btn .badge{
+  color: black;
+    background-color: yellow;
+    vertical-align: top;
+ }
+  .header{
+    background-color: #404040;
+    text-align: center;
+  }
+  .headicon{
+    font-size: 20px;
+  }
+  .header a{
+    font-size: 18px;
+  }
+  textarea, input{
+    border: 0;
+    background: #ffffe6;
+    width: 430px;
+    max-width: 100%;
+  }
+
+@media (max-width:600px) {
+  .topic {
+      font-size: 0px !important;
+  }
+  .btn .logout{
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+}  
+
+  </style>
+</head>
+<body onload="AutoRefresh()" >
+<div class="container-fluid">
+  <div class="row">
+<div class="col-sm-12 header">
+  <a class="btn btn-success topic" role="button" id="profile_id"> <i class='fas fa-user-edit headicon'></i> Profile</a>
+  <a class="btn btn-info topic" role="button" id="chat" href=""> <i class="fa fa-comments headicon"> </i> Chat</a>
+  <a class="btn btn-info topic" role="button active" id="frnd"> <i class="fa fa-users headicon"></i> Network <span class="badge"> {{profile.all_notify}}</span> </a>
+  <a class="btn btn-info topic" role="button" id="findfrnd" href=""> <i class='fas fa-globe-americas headicon'></i> Explore </a>
+  <a class="btn btn-danger" role="button" href="/logout"> <span class="glyphicon glyphicon-log-out"></span>  <span class="topic"> Log out </span> </a>
+</div>
+</div>
+<div class="row"> 
+  <div class="col-sm-2"></div>
+  <div class="col-sm-4 well" style="text-align: center; height: 300px;"> 
+     {% load staticfiles %}
+
+      {% if pimages.prof_pic %}
+         <img src="{{ pimages.prof_pic.url }}" style="max-width:80%; max-height: 80%;" >
+      {% else %}
+         <img src="{% static 'user.png' %}" alt="{{user.first_name}}" style="width:40%">
+      {% endif %}
+
+      <br>
+      <h2 style="color: green;">{{user.first_name}}</h2>
+      <br><br>
+  </div>
+
+    <div class="col-sm-4 well" style="height: 300px;">
+      <p> <i> About: </i> </p>
+      <p>     <b> {{profile.bio}} </b></p>
+      <p> <i> Lives in: </i> <b> {{profile.livesin}} </b> </p>
+      <p> <i> From: </i> <b> {{profile.hometown}} </b> </p>
+      <p> <i> Studies/Working at: </i> <b> {{profile.school}} </b> </p>
+
+
+</div>
+  <div class="col-sm-2"></div>
+</div>
+
+<!-- edit profile  -->
+<div class="row"> 
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8 well" style="padding-left: : 10%; font-size: 18px;">
+    <details>
+      <summary style="font-size: 20px;">Edit Profile</summary>
+      <br>
+      <form method = "post" action="/user/{{user.id}}/update_pic/" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        <table>
+          <tr>
+            <td style=" max-width: 280px;"> {{ form.prof_pic }}</td>
+          </tr>
+        </table>
+      <p style="color: red;">* max file size 5MB </p>
+
+        <table style="margin-top: 10px;">
+          <tr>
+            <td style="max-width: 280px;"> <button type="submit">change profile picture</button> </td>
+          </tr>
+        </table>
+
+      </form>
+
+    <form action="/user/{{user.id}}/del_prof_pic/" method="POST" >
+        {% csrf_token %}
+       <button style="font-size: 18px; float: right;" type="submit" id="del_icon" class="btn btn-default btn-sm del_icon"> <span class="glyphicon glyphicon-trash" ></span> Remove picture  </button>
+    </form>
+
+
+      <h3>About</h3>
+    <form action="/user/{{user.id}}/saveprofile/" method="POST" >
+        {% csrf_token %}
+
+      <textarea id="test1"   name="bio" placeholder="write here">{{profile.bio}}</textarea> 
+
+      <p>Lives in <input id="test2" type="text" name="livesin" placeholder="write here" value="{{profile.livesin}}"> </p>
+      <p>From  <input id="test3" type="text" name="hometown" placeholder="write here"  value="{{profile.hometown}}"> </p>
+      <p>Studies/Working at <input id="test4" type="text" placeholder="write here"  name="school" value="{{profile.school}}"> </p>
+
+      <p>Full name <input id="test6" type="text" name="fullname" minlength="4"  placeholder="write here" value="{{user.first_name}}"> </p>
+
+      <button  type="submit">Save</button>
+    </form>
+
+    <form action="/user/{{user.id}}/prof_del/" method="POST" >
+        {% csrf_token %}
+       <button style="font-size: 18px; float: right;" type="submit" id="del_icon" class="btn btn-default btn-sm del_icon"> <span class="glyphicon glyphicon-trash" ></span> Delete Profile </button>
+    </form>
+  </details>
+</div>
+  <div class="col-sm-2"></div>
+</div>
+
+<div class="row"> 
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8 well" style="padding: 4px; font-size: 18px;">
+    <h3  id="posts" style="text-align: center;">Posts</h3>
+
+    {% for st  in status %}
+    <div id="{{st.id}}" style="border: 1px solid black;  padding: 10px;">
+      <p > {{st.status}} </p>
+
+      {% if st.status_pic %}
+          <img src="{{ st.status_pic.url }}" style="width:400px; max-width: 100%; max-height: 400px; margin-bottom: 15px;">
+          <br>
+      {% endif %}
+      
+        <span  style="color: blue;"> {{ st.num_like }} likes </span>
+        <form action="/user/{{user.id}}/likes/" method="POST"  style="display: inline;" >
+            {% csrf_token %}
+            <input style="display: none;" type="text" value="{{st.id}}" name="status_id">
+          <button  type="submit">Like</button>
+        </form>
+
+        <form action="/user/{{user.id}}/del_status/" method="POST" style="display: inline;">
+            {% csrf_token %}
+            <input style="display: none;" type="text" value="{{st.id}}" name="status_id">
+          <button  type="submit">Delete post</button>
+        </form>
+      </div>
+
+      <br>  
+    {% endfor %}
+</div>
+
+  <div class="col-sm-2"></div>
+</div>
+
+
+
+<div class="row"> 
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8 well" style="font-size: 18px;">
+
+<details>
+  <summary style="font-size: 20px;">update status</summary>
+
+    <form method = "post" action="/user/{{user.id}}/update_status/" enctype="multipart/form-data"> 
+      {% csrf_token %}
+      <br>
+      {{ status_form.status.errors }}
+      {{ status_form.status_pic.errors }}
+      {{ status_form.status }} <br>
+      {{ status_form.status_pic }}
+      <p style="color: red;">* max file size 5MB </p>
+      <button type="submit">update status</button>
+    </form>
+
+</details>
+
+</div>
+  <div class="col-sm-2"></div>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+
+<script>
+
+  function AutoRefresh() {
+    var mylink = window.location.href;
+    var baselink = mylink.split("#",2)[0];
+
+    document.getElementById("profile_id").href=baselink;
+    document.getElementById("chat").href=baselink + "/chat/0";
+    document.getElementById("frnd").href=baselink + "/myfrnd";
+    document.getElementById("findfrnd").href=baselink + "/findfrnd";
+    
+}
+</script>
+</body>
+</html>
