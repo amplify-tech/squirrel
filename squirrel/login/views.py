@@ -41,9 +41,13 @@ def register(request):
         username = request.POST['fname']
         fullname = request.POST['fullname']
         passwd = request.POST['pswd']
+        passwd1 = request.POST['pswd1']
 
         if User.objects.filter(username=username).exists():
             messages.info(request, 'Username Taken')
+            return redirect('register')
+        elif passwd != passwd1:
+            messages.info(request, 'password not match')
             return redirect('register')
         else:
             user = User.objects.create_user(username=username,first_name=fullname ,password=passwd)

@@ -51,7 +51,8 @@
 <body onload="changeurl()">
 <div class="well">
   <a class="btn btn-info" role="button" id="profile" href="">Home</a>
-
+ 
+  <p> {{ profilelist|length }} results </p>
     {% for i in profilelist %}
   	<div class="well" style="max-width: 600px; text-align: center;">
       <div class="well">

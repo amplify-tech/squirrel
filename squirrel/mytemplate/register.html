@@ -61,13 +61,16 @@
     <form action="/register/" method="POST">
         {% csrf_token %}
         <p>Full name &nbsp 
-        <input type="text" placeholder="Full name" name="fullname" minlength="4"  required autofocus> </p>
+        <input type="text" placeholder="Full name" name="fullname" minlength="4"  maxlength="25"  required autofocus> </p>
         <br>
         <p>Username &nbsp 
-        <input type="text" placeholder="User_Name" name="fname" minlength="4" required> </p>
+        <input type="text" placeholder="User_Name" name="fname" minlength="4" maxlength="25" required> </p>
         <br>
         <p>Password &nbsp 
-        <input  type="password" placeholder="Password" name="pswd" minlength="5" required> </p>
+        <input  type="password" placeholder="Password" name="pswd" minlength="5" maxlength="25" required> </p>
+        <br> 
+        <p>Confirm Password &nbsp 
+        <input  type="password" placeholder="Password" name="pswd1" minlength="5" maxlength="25"  required> </p>
         <br> 
         <button  type="submit">Register</button>
 
