@@ -399,6 +399,9 @@ def submitted(request,user_id=None):
 
         thischat_key =  str(min(user.id, int(rcvr))) + "@" + str(max(user.id, int(rcvr)))
         
+        print(curmsz)
+        chnged_msz = curmsz.replace("#", "# ")
+        print(chnged_msz)
         msz1 = Chate(sender=user, chatkey=thischat_key, msz=curmsz)
         msz1.save()
         return redirect('/user/' + str(user.id) + '/chat/' +str(rcvr) + "#rcvridd")
